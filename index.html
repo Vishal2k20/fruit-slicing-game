@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#fff9ef">
+  <meta name="description" content="Juicy Rush — A premium, fast-paced browser fruit slicing arcade game. Slice juicy fruits, avoid dangerous bombs, and chain massive combos!">
+  <meta property="og:title" content="Juicy Rush — Fruit Slice Arcade">
+  <meta property="og:description" content="Slice fruit, dodge bombs, and beat the clock in 60 seconds of juicy arcade fun!">
+  <meta property="og:type" content="website">
+  <title>Juicy Rush — Fruit Slice Arcade</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="shell" id="mainShell">
+    <!-- Top Bar Navigation & Controls -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true">✦</div>
+        <div class="brand-text">
+          <span class="eyebrow">THE LITTLE ARCADE</span>
+          <h1>JUICY <em>RUSH</em><span class="dot">.</span></h1>
+        </div>
+      </div>
+
+      <nav class="top-actions" aria-label="Game controls">
+        <!-- Sound Toggle -->
+        <button id="soundBtn" class="control-btn" type="button" aria-label="Toggle sound" title="Mute/Unmute sound (Key: M)">
+          <svg class="icon sound-on" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg class="icon sound-off hidden" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <!-- Pause / Resume -->
+        <button id="pauseBtn" class="control-btn" type="button" aria-label="Pause game" title="Pause / Resume (Key: Space or P)" disabled>
+          <svg class="icon pause-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <rect x="6" y="5" width="4" height="14" rx="1.5"></rect>
+            <rect x="14" y="5" width="4" height="14" rx="1.5"></rect>
+          </svg>
+          <svg class="icon play-icon hidden" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <polygon points="7 4 20 12 7 20 7 4"></polygon>
+          </svg>
+        </button>
+
+        <!-- Restart -->
+        <button id="restartBtn" class="control-btn" type="button" aria-label="Restart round" title="Restart game (Key: R)">
+          <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"></path>
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main Game Section -->
+    <section class="game-container" id="gameContainer" aria-label="Game board">
+      <!-- HUD Bar -->
+      <div class="hud" role="region" aria-label="Game statistics">
+        <div class="hud-item hud-score">
+          <span class="hud-label">YOUR SCORE</span>
+          <strong id="scoreVal" class="hud-value tabular" aria-live="polite">0000</strong>
+        </div>
+
+        <div class="hud-item hud-best">
+          <span class="hud-label">BEST RECORD</span>
+          <div class="best-wrapper">
+            <svg class="trophy-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+              <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1c1.94-.37 3.5-1.9 3.61-4.06C19.08 11.63 21 9.55 21 7V5c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"></path>
+            </svg>
+            <strong id="bestVal" class="hud-value tabular">0000</strong>
+          </div>
+        </div>
+
+        <div class="hud-item hud-timer" id="timerContainer">
+          <span class="hud-label">TIME REMAINING</span>
+          <strong id="timerVal" class="hud-value timer-value tabular" aria-live="polite">60<span class="unit">s</span></strong>
+        </div>
+      </div>
+
+      <!-- Canvas Interactive Play Arena -->
+      <div class="arena" id="arena" role="region" aria-label="Fruit slicing canvas">
+        <!-- Background decorative ambient arcs -->
+        <div class="arena-decors" aria-hidden="true">
+          <span class="decor-sparkle decor-top-left">✦</span>
+          <span class="decor-sparkle decor-bottom-right">✳</span>
+          <div class="decor-ring decor-ring-1"></div>
+          <div class="decor-ring decor-ring-2"></div>
+        </div>
+
+        <!-- HTML5 Canvas for high-performance 60fps rendering -->
+        <canvas id="gameCanvas" width="900" height="560" aria-label="Juicy Rush slicing game play area. Drag your mouse or swipe your finger across fruits to slice them. Do not hit bombs."></canvas>
+
+        <!-- Dynamic Combo Callout UI Badge -->
+        <div id="comboBanner" class="combo-banner" aria-live="assertive" aria-hidden="true">
+          <span class="combo-count" id="comboCount">3×</span>
+          <span class="combo-text" id="comboText">JUICY COMBO!</span>
+          <span class="combo-points" id="comboBonus">+40 PTS</span>
+        </div>
+
+        <!-- Full Arena Modals / Overlays -->
+        <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+          <div class="overlay-card" id="overlayCard">
+            <!-- Dynamic Mascot Fruit Cluster -->
+            <div class="fruit-mascots" aria-hidden="true">
+              <span class="mascot mascot-watermelon">🍉</span>
+              <span class="mascot mascot-orange">🍊</span>
+              <span class="mascot mascot-strawberry">🍓</span>
+            </div>
+
+            <div class="pill" id="overlayPill">READY, SET, SLICE!</div>
+            <h2 id="overlayTitle">Fresh Fun.<br><em>Fast Fingers.</em></h2>
+            <p id="overlayDesc">
+              Swipe rapidly through fruits to chop them into halves and rack up juicy points. Chain consecutive slices for mega combo multipliers — but <strong>never</strong> touch the bombs!
+            </p>
+
+            <!-- Stats summary shown after game over -->
+            <div class="game-over-stats hidden" id="gameOverStats">
+              <div class="stat-pill">
+                <span class="label">FRUITS SLICED</span>
+                <strong id="statFruits">0</strong>
+              </div>
+              <div class="stat-pill">
+                <span class="label">MAX COMBO</span>
+                <strong id="statCombo">0×</strong>
+              </div>
+              <div class="stat-pill highlight-pill" id="statRecordPill">
+                <span class="label">RECORD</span>
+                <strong id="statRecord">KEEP TRYING!</strong>
+              </div>
+            </div>
+
+            <div class="overlay-buttons">
+              <button id="primaryBtn" class="btn btn-primary" type="button">
+                <span id="primaryBtnText">START GAME</span>
+                <svg class="btn-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+
+              <button id="secondaryBtn" class="btn btn-secondary hidden" type="button">
+                <span>RESTART ROUND</span>
+              </button>
+            </div>
+
+            <!-- Gesture / Key Hint -->
+            <div class="controls-hint">
+              <span>MOUSE DRAG · TOUCH SWIPE</span>
+              <span class="hint-separator">✦</span>
+              <span><kbd>SPACE</kbd> PAUSE · <kbd>R</kbd> RESTART · <kbd>M</kbd> MUTE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arena bottom micro-legend -->
+        <div class="arena-footer-legend" aria-hidden="true">
+          <span class="legend-item"><span class="legend-dot green"></span> SLICE ALL FRUITS</span>
+          <span class="legend-item"><span class="legend-dot red">●</span> AVOID BOMBS (INSTANT OVER)</span>
+          <span class="legend-item"><span class="legend-dot gold">★</span> CHAIN FAST FOR COMBOS</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Page Details -->
+    <footer class="bottom-bar">
+      <span>ORIGINAL VECTOR CANVAS ART ✳ 100% PURE WEB AUDIO SYNTH</span>
+      <span>BUILT FOR FAST DELIGHTFUL SESSIONS</span>
+    </footer>
+  </main>
+
+  <script src="./game.js" defer></script>
+</body>
+</html>
