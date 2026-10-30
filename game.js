@@ -2,6 +2,7 @@
  * Juicy Rush — Complete Fruit Slice Arcade Game Engine
  * Plain HTML5 Canvas & Web Audio API
  */
+<meta name="google-adsense-account" content="ca-pub-8254729807539525">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8254729807539525"
      crossorigin="anonymous"></script>
 'use strict';
